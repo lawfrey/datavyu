@@ -119,11 +119,13 @@ public final class SpreadsheetPanel extends JPanel
      * New variable button to be added to the column header panel.
      */
     private JButton newVar = new JButton();
+    private JLabel newVarSpacer = new JLabel();
     
     /**
      * Hidden variables button to be added to the column header panel.
      */
     private JButton hiddenVars;
+    private JLabel hiddenVarsSpacer = new JLabel();;
 
     /**
      * The currently highlighted cell.
@@ -208,7 +210,16 @@ public final class SpreadsheetPanel extends JPanel
         }
         setDatabase(pc.getDB());
         hiddenVars = makeHiddenVarsButton();
-
+        newVarSpacer.setText(" + ");
+        newVarSpacer.setForeground(newVarSpacer.getBackground());
+        mainView.add(newVarSpacer);
+        
+        hiddenVars = makeHiddenVarsButton();
+        headerView.add(hiddenVars);
+        hiddenVarsSpacer.setForeground(hiddenVarsSpacer.getBackground());
+        mainView.add(hiddenVarsSpacer);
+        
+        
         buildColumns(progressBar);
         projectController = pc;
         pc.setSpreadsheetPanel(this);
@@ -216,7 +227,10 @@ public final class SpreadsheetPanel extends JPanel
         setName(datastore.getName());
         numNewSheets++;
 
-
+        
+        //layout the columns
+        buildColumns(progressBar);
+        
         // Enable drag and drop support.
         setDropTarget(new DropTarget(this, new SSDropTarget()));
         fileDropListeners = new CopyOnWriteArrayList<FileDropEventListener>();
@@ -266,6 +280,7 @@ public final class SpreadsheetPanel extends JPanel
                 dropdown.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+        hiddenVarsSpacer.setText(hiddenVars.getText());
     }
 
     /**
@@ -352,6 +367,8 @@ public final class SpreadsheetPanel extends JPanel
         // Remove previous instance of newVar from the header.
         headerView.remove(newVar);
         headerView.remove(hiddenVars);
+        mainView.remove(newVarSpacer);
+        mainView.remove(hiddenVarsSpacer);
 
         // Create the spreadsheet column and register it.
         SpreadsheetColumn col = new SpreadsheetColumn(db, var, this, this, this);
@@ -367,6 +384,8 @@ public final class SpreadsheetPanel extends JPanel
         headerView.add(newVar);
         updateHiddenVars();
         headerView.add(hiddenVars);
+        mainView.add(newVarSpacer);        
+        mainView.add(hiddenVarsSpacer);
 
         // and add it to our maintained ref collection
         columns.add(col);

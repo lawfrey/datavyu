@@ -36,7 +36,7 @@ public final class DatavyuMatrixValue extends DatavyuValue implements MatrixValu
     public DatavyuMatrixValue() {
     }
 
-    public DatavyuMatrixValue(UUID parent_id, Argument type) {
+    public DatavyuMatrixValue(UUID parent_id, Argument type, Datastore ds) {
         this.parentId = parent_id;
         values = new ArrayList<Value>();
         for (Argument arg : type.childArguments) {
@@ -44,6 +44,7 @@ public final class DatavyuMatrixValue extends DatavyuValue implements MatrixValu
         }
         this.arg = type;
         value = "MATRIX";
+        owningDatastore = ds;
     }
 
     @Override
@@ -114,9 +115,9 @@ public final class DatavyuMatrixValue extends DatavyuValue implements MatrixValu
         Value val = null;
         String name = String.format("code%02d", getArguments().size() + 1);
         if (arg.type == Argument.Type.NOMINAL) {
-            val = new DatavyuNominalValue(this.id, name, getArguments().size(), arg);
+            val = new DatavyuNominalValue(this.id, name, getArguments().size(), arg, owningDatastore);
         } else if (arg.type == Argument.Type.TEXT) {
-            val = new DatavyuTextValue(this.id, name, getArguments().size(), arg);
+            val = new DatavyuTextValue(this.id, name, getArguments().size(), arg, owningDatastore);
         }
         this.getArguments().add(val);
         return val;

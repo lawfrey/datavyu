@@ -31,6 +31,7 @@ public class DatavyuCell implements Cell {
     private Map<String, Value> arguments = new HashMap<String, Value>();
     private Value value;
     final private UUID id = UUID.randomUUID();
+    private Datastore owningDatastore;
 
     /**
      * @param cellId The ID of the variable we want the listeners for.
@@ -50,7 +51,7 @@ public class DatavyuCell implements Cell {
     public DatavyuCell() {
     }
 
-    public DatavyuCell(Variable parent, Argument type) {
+    public DatavyuCell(Variable parent, Argument type, Datastore ds) {
         this.parent = parent;
         this.type = type;
 
@@ -58,15 +59,16 @@ public class DatavyuCell implements Cell {
         this.offset = 0L;
         this.selected = true;
         this.highlighted = true;
+        owningDatastore = ds;
 
         // Build argument list from the argument given
 
         if (type.type == Argument.Type.NOMINAL) {
-            this.value = new DatavyuNominalValue(getID(), type);
+            this.value = new DatavyuNominalValue(getID(), type, owningDatastore);
         } else if (type.type == Argument.Type.TEXT) {
-            this.value = new DatavyuTextValue(getID(), type);
+            this.value = new DatavyuTextValue(getID(), type, owningDatastore);
         } else {
-            this.value = new DatavyuMatrixValue(getID(), type);
+            this.value = new DatavyuMatrixValue(getID(), type, owningDatastore);
         }
     }
 
@@ -112,7 +114,7 @@ public class DatavyuCell implements Cell {
 
     @Override
     public void setOffset(final long newOffset) {
-        if (newOffset != offset) Datavyu.getProjectController().getDB().markDBAsChanged();
+        if (newOffset != offset) owningDatastore.markDBAsChanged();
         offset = newOffset;
         for (CellListener cl : getListeners(getID())) {
             cl.offsetChanged(offset);
@@ -142,7 +144,7 @@ public class DatavyuCell implements Cell {
 
     @Override
     public void setOnset(final long newOnset) {
-        if (newOnset != onset) Datavyu.getProjectController().getDB().markDBAsChanged();
+        if (newOnset != onset) owningDatastore.markDBAsChanged();
         onset = newOnset;
         for (CellListener cl : getListeners(getID())) {
             cl.onsetChanged(onset);

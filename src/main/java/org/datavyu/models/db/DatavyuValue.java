@@ -27,6 +27,8 @@ import org.datavyu.Datavyu;
 
 import java.io.Serializable;
 import java.util.UUID;
+import org.datavyu.Datavyu;
+import org.datavyu.util.StringUtils;
 
 
 public abstract class DatavyuValue implements Value, Serializable, Comparable<DatavyuValue> {
@@ -37,6 +39,7 @@ public abstract class DatavyuValue implements Value, Serializable, Comparable<Da
     UUID id = UUID.randomUUID();
     String name = "";
     Argument arg;
+    Datastore owningDatastore;
 
     @Override
     public boolean isValid(final String value) {
@@ -82,7 +85,7 @@ public abstract class DatavyuValue implements Value, Serializable, Comparable<Da
         if(!newValue.equals(toString()) && !newValue.equals(this.value))
         {
             this.value = newValue;
-            Datavyu.getProjectController().getDB().markDBAsChanged();
+            owningDatastore.markDBAsChanged();
         }
         else
         {
@@ -105,6 +108,6 @@ public abstract class DatavyuValue implements Value, Serializable, Comparable<Da
     
     public String serialize() {
         if(value == null) return "";
-        return value;
+        return StringUtils.escapeCSVArgument(value);
     }
 }

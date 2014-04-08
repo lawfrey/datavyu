@@ -35,16 +35,18 @@ public final class DatavyuNominalValue extends DatavyuValue implements NominalVa
         this.index = -1;
     }
 
-    public DatavyuNominalValue(UUID parent_id, Argument arg) {
+    public DatavyuNominalValue(UUID parent_id, Argument arg, Datastore ds) {
         this(parent_id);
         this.arg = arg;
+        owningDatastore = ds;
     }
 
-    public DatavyuNominalValue(UUID parent_id, String name, int index, Argument type) {
+    public DatavyuNominalValue(UUID parent_id, String name, int index, Argument type, Datastore ds) {
         this(parent_id);
         this.index = index;
         this.name = name;
         this.arg = type;
+        owningDatastore = ds;
     }
 
 }

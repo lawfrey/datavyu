@@ -85,7 +85,7 @@ public abstract class DatavyuValue implements Value, Serializable, Comparable<Da
         if(!newValue.equals(toString()) && !newValue.equals(this.value))
         {
             this.value = newValue;
-            owningDatastore.markDBAsChanged();
+            if (owningDatastore != null) owningDatastore.markDBAsChanged();
         }
         else
         {
